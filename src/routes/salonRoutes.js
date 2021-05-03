@@ -14,7 +14,7 @@ exports.createSalon = catchAsync(async (req, res, next) => {
 
   await salon.save()
   await user.updateOne({ roles: "owner" })
-  sendSalonCreationEmail(salon.contact_Info.email, salon.name)
+  await sendSalonCreationEmail(salon.contact_Info.email, salon.name)
   res.status(201).send(salon)
 })
 
@@ -77,7 +77,7 @@ exports.DeleteSalon = catchAsync(async (req, res, next) => {
     res.status(404).send()
   }
 
-  sendSalonDeletionEmail(salon.contact_Info.email, salon.name)
+  await sendSalonDeletionEmail(salon.contact_Info.email, salon.name)
   await req.user.updateOne({ roles: "user" })
   res.send()
 })

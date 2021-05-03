@@ -15,7 +15,7 @@ exports.SignUp = catchAsync(async (req, res, next) => {
   const user = new User(req.body)
   await user.save({ runValidators: true })
   const token = await generateAuthToken(user, res)
-  sendWelcomeEmail(user.email, user.name) // try await!!
+  await sendWelcomeEmail(user.email, user.name) // try await!!
   res.status(200).send({ token, user })
 })
 
@@ -31,7 +31,7 @@ exports.readUser = catchAsync(async (req, res, next) => {
 
 exports.deleteUser = catchAsync(async (req, res, next) => {
   await req.user.remove()
-  sendByeByeEmail(req.user.email, req.user.name)
+  await sendByeByeEmail(req.user.email, req.user.name)
   res.send()
 })
 
@@ -94,7 +94,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   try {
-    passwordChangeEmail(user.email, resetToken)
+    await passwordChangeEmail(user.email, resetToken)
     res.status(200).send();
   } catch (err) {
     user.passwordResetToken = undefined;
@@ -125,7 +125,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
   await user.save();
-  passwordChangedEmail(user.email)
+  await passwordChangedEmail(user.email)
   next();
 });
 
@@ -139,6 +139,6 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 
   user.password = req.body.password;
   await user.save();
-  passwordChangedEmail(user.email)
+  await passwordChangedEmail(user.email)
   next()
 });

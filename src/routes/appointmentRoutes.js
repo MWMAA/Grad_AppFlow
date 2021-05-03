@@ -20,7 +20,7 @@ exports.createAppointment = catchAsync(async (req, res, next) => {
   }
 
   await appointment.save()
-  sendAppointmentApprovalEmail(appointment.user.email)
+  await sendAppointmentApprovalEmail(appointment.user.email)
   res.status(201).send(appointment)
 })
 
@@ -87,7 +87,7 @@ exports.updateAppointment = catchAsync(async (req, res, next) => {
 
   update.forEach((updates) => appointment[updates] = req.body[updates])
   await appointment.save()
-  sendAppointmentUpdateEmail(appointment.user.email)
+  await sendAppointmentUpdateEmail(appointment.user.email)
   res.send(appointment)
 })
 
@@ -104,7 +104,7 @@ exports.deleteAppointment = catchAsync(async (req, res, next) => {
     res.status(404).send()
   }
 
-  sendAppointmentCancellationEmail(appointment.user.email)
+  await sendAppointmentCancellationEmail(appointment.user.email)
   res.send()
 })
 
@@ -122,7 +122,7 @@ exports.createReview = catchAsync(async (req, res, next) => {
   })
 
   if (req.body.star < 2) {
-    sendBadReviewEmail(appointment.user.email, appointment.user.name, req.body.stars)
+    await sendBadReviewEmail(appointment.user.email, appointment.user.name, req.body.stars)
   }
   res.status(200).send()
 })
@@ -132,7 +132,7 @@ exports.completeAppointment = catchAsync(async (req, res, next) => {
   const appointment = await Appointment.findOne({
     _id
   })
-  
+
   if (!appointment) {
     return res.status(404).send()
   }
