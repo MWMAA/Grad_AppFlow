@@ -71,12 +71,10 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
 
   req.user.avatar = `user-${req.user.id}-${Date.now()}.jpeg`;
 
-  // path.resolve(`./public/images/` + `${req.user.avatar}`)
-
   await sharp(req.file.buffer)
-    .resize({ width: 500, height: 250 })
+    .resize({ width: 500, height: 500 })
     .png()
-    .toFile(`${req.user.avatar}.`)
+    .toFile('./public/' + `${req.user.avatar}`)
     .then(console.log("image saved"))
     .catch(e => console.log(e))
 
@@ -140,5 +138,5 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   user.password = req.body.password;
   await user.save();
   await passwordChangedEmail(user.email)
-  res.status(200).send()
+  next()
 });
