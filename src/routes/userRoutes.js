@@ -140,5 +140,5 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   user.password = req.body.password;
   await user.save();
   await passwordChangedEmail(user.email)
-  next()
+  res.status(200).send()
 });

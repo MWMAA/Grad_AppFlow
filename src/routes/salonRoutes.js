@@ -79,5 +79,5 @@ exports.DeleteSalon = catchAsync(async (req, res, next) => {
 
   await sendSalonDeletionEmail(salon.contact_Info.email, salon.name)
   await req.user.updateOne({ roles: "user" })
-  res.send()
+  next();
 })

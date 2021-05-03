@@ -101,7 +101,7 @@ userSchema.statics.findByCredentials = async (email, password) => {
 }
 
 userSchema.methods.comparePasswords = async (candidatePassword, userPassword) => {
-  await crypt.compare(candidatePassword, userPassword);
+  return await crypt.compare(candidatePassword, userPassword);
 };
 
 // Delete User appointment when user is removed
