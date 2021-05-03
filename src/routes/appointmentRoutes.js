@@ -11,12 +11,13 @@ exports.createAppointment = catchAsync(async (req, res, next) => {
   })
 
   const servicesArray = []
-  for (i in salon.services) {
-    servicesArray.concat(salon.services.name)
+
+  for (i = 0; i < appointment.services.length; i++) {
+    servicesArray.push(appointment.services[i])
   }
 
-  for (i in appointment.services) {
-    if (!servicesArray.includes(i)) return res.status(400).send({ error: "Invalid services!" });
+  for (i = 0; i < servicesArray.length; i++) {
+    if (!appointment.services.includes(servicesArray[i])) return res.status(400).send({ error: "Invalid services!" });
   }
 
   await appointment.save()
