@@ -1,0 +1,26 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+flask = "*"
+numpy = "*"
+pandas = "*"
+autopep8 = "*"
+flask-restful = "*"
+matplotlib = "*"
+pathlib = "*"
+requests = "*"
+joblib = "*"
+opencv-python = "*"
+cmake = "*"
+sklearn = "*"
+face-recognition = "*"
+dlib = "*"
+pillow = "*"
+
+[requires]
+python_version = "3.8"
