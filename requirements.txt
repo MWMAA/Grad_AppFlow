@@ -1,0 +1,16 @@
+Flask 
+numpy 
+pandas 
+autopep8 
+Flask-RESTful 
+matplotlib 
+pathlib 
+requests 
+joblib 
+opencv-python 
+cmake 
+sklearn 
+face-recognition 
+dlib 
+pillow
+uwsgi
