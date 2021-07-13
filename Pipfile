@@ -21,6 +21,7 @@ sklearn = "*"
 face-recognition = "*"
 dlib = "*"
 pillow = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.8"

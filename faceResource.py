@@ -13,4 +13,4 @@ class faceReco(Resource):
         image = Image.open(request.files['image'])
         image.save('public/imgs/user.jpg')
         imgs = hair_style_recommend("public/imgs/user.jpg")
-        return imgs['1'], 200
+        return imgs, 200
