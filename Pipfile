@@ -22,6 +22,7 @@ face-recognition = "*"
 dlib = "*"
 pillow = "*"
 flask-cors = "*"
+pyopenssl = "*"
 
 [requires]
 python_version = "3.8"
