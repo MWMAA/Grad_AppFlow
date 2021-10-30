@@ -29,7 +29,7 @@ export interface UserData extends Document {
   DoB: Date;
   avatar: string;
   balance: number;
-  gender: gender;
+  // gender: gender;
   passwordChangedAt: Date;
   passwordResetToken: string | undefined;
   passwordResetExpires: Date | undefined;
@@ -45,7 +45,7 @@ export interface UserReturn {
   Activated: boolean;
   avatar: string;
   balance: number;
-  gender: gender;
+  // gender: gender;
 }
 
 export interface UserInterface extends UserData {

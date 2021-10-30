@@ -60,11 +60,11 @@ const userSchema = new mongoose.Schema<UserData, UserModel>(
       type: Number,
       default: 0.0,
     },
-    gender: {
-      type: String,
-      enum: ["Male", "Female"],
-      required: true,
-    },
+    // gender: {
+    //   type: String,
+    //   enum: ["Male", "Female"],
+    //   required: true,
+    // },
     token: String,
     passwordChangedAt: Date,
     passwordResetToken: String,
