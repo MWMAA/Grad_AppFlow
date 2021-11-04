@@ -1,14 +1,15 @@
-import { ADD_TO_CART, REMOVE_FROM_CART } from '../actions/cart';
-import { ADD_ORDER } from '../actions/orders';
-import CartItem from '../../models/cart-item';
-import { DELETE_PRODUCT } from '../actions/products';
+import { AnyAction } from "redux";
+import { ADD_TO_CART, REMOVE_FROM_CART } from "../actions/cart";
+// import { ADD_ORDER } from '../actions/orders';
+import CartItem from "../../models/cart-item";
+// import { DELETE_PRODUCT } from '../actions/products';
 
 const initialState = {
   items: {},
-  totalAmount: 0
+  totalAmount: 0,
 };
 
-export default (state = initialState, action) => {
+export default (state = initialState, action: AnyAction) => {
   switch (action.type) {
     case ADD_TO_CART:
       const addedProduct = action.product;
@@ -31,7 +32,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         items: { ...state.items, [addedProduct.id]: updatedOrNewCartItem },
-        totalAmount: state.totalAmount + prodPrice
+        totalAmount: state.totalAmount + prodPrice,
       };
     case REMOVE_FROM_CART:
       const selectedCartItem = state.items[action.pid];
@@ -53,22 +54,22 @@ export default (state = initialState, action) => {
       return {
         ...state,
         items: updatedCartItems,
-        totalAmount: state.totalAmount - selectedCartItem.productPrice
+        totalAmount: state.totalAmount - selectedCartItem.productPrice,
       };
-    case ADD_ORDER:
-      return initialState;
-    case DELETE_PRODUCT:
-      if (!state.items[action.pid]) {
-        return state;
-      }
-      const updatedItems = { ...state.items };
-      const itemTotal = state.items[action.pid].sum;
-      delete updatedItems[action.pid];
-      return {
-        ...state,
-        items: updatedItems,
-        totalAmount: state.totalAmount - itemTotal
-      };
+    // case ADD_ORDER:
+    //   return initialState;
+    // case DELETE_PRODUCT:
+    //   if (!state.items[action.pid]) {
+    //     return state;
+    //   }
+    //   const updatedItems = { ...state.items };
+    //   const itemTotal = state.items[action.pid].sum;
+    //   delete updatedItems[action.pid];
+    //   return {
+    //     ...state,
+    //     items: updatedItems,
+    //     totalAmount: state.totalAmount - itemTotal
+    //   };
   }
 
   return state;

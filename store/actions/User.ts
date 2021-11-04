@@ -1,7 +1,6 @@
 import axios, { AxiosResponse, Method } from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Dispatch } from "redux";
-import { UserData } from "../../interfaces/user";
 
 const Link = "http://192.168.1.103:3000";
 
@@ -47,7 +46,6 @@ export const signup = (name: string, email: string, password: string) => {
   return async (dispatch: Dispatch) => {
     axiosRequest("post", "/SignUp", { name, email, password }, false)
       .then(async (res: any) => {
-        console.log(res);
         await AsyncStorage.setItem("Access_Token", res.data.accessToken);
         await AsyncStorage.setItem("Refresh_Token", res.data.refreshToken);
 

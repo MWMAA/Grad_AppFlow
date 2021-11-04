@@ -8,6 +8,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { userReducer } from "./store/reducers/User";
 import AppNavigator from "./navigation/AppNavigator";
 import { salonReducer } from "./store/reducers/Salon";
+import logger from "redux-logger";
 
 const rootReducer = combineReducers({
   user: userReducer,
@@ -17,7 +18,11 @@ const rootReducer = combineReducers({
 });
 export type RootState = ReturnType<typeof rootReducer>;
 
-const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
+const store = createStore(
+  rootReducer,
+  // applyMiddleware(ReduxThunk, logger),
+  applyMiddleware(ReduxThunk)
+);
 
 export default function App() {
   return (

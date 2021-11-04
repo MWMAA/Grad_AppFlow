@@ -10,16 +10,16 @@ const axiosRequest = async (
   data: {},
   Authenticate: boolean
 ) => {
-  const accessToken = await AsyncStorage.getItem("Access_Token");
-  axios({
+  const refreshToken = await AsyncStorage.getItem("Access_Token");
+  return axios({
     method: `${RequestMethod}`,
     url: Link + RequestUrl,
     data,
     headers: {
       "Content-type": "application/json",
-      Authorization: Authenticate ? `Bearer ${accessToken}` : null,
+      Authorization: Authenticate ? `Bearer ${refreshToken}` : null,
     },
-  });
+  }).catch((err) => console.log(err));
 };
 
 // export const createSalon = (salonData: {}) => {
@@ -27,107 +27,50 @@ const axiosRequest = async (
 //     axiosRequest("post", "/salons", { ...salonData }, true)
 //       .then(async (res: any) => {
 //         dispatch({
-//           type: "SET_ARTIFACTS",
-//           products: res.data,
+//           type: "ADD_SALON",
+//           salonData: res.data,
 //         });
 //       })
 //       .catch((err) => console.log(err));
 //   };
 // };
 
-// export const readAllSalons = () => {
-//   return async (dispatch: Dispatch) => {
-//     axiosRequest("get", "/salons", {}, true)
-//       .then(async (res: any) => {
-//         dispatch({
-//           type: "SET_ARTIFACTS",
-//           products: res.data,
-//         });
-//       })
-//       .catch((err) => console.log(err));
-//   };
-// };
-
-// export const readSalonByID = (id: string) => {
-//   return async (dispatch: Dispatch) => {
-//     axiosRequest("get", `/salons/${id}`, {}, true)
-//       .then(async (res: any) => {
-//         dispatch({
-//           type: "SET_ARTIFACTS",
-//           products: res.data,
-//         });
-//       })
-//       .catch((err) => console.log(err));
-//   };
-// };
-
-// export const updateSalon = (id: string) => {
-//   return async (dispatch: Dispatch) => {
-//     axiosRequest("patch", `/salons/${id}`, {}, true)
-//       .then(async (res: any) => {
-//         dispatch({
-//           type: "SET_ARTIFACTS",
-//           products: res.data,
-//         });
-//       })
-//       .catch((err) => console.log(err));
-//   };
-// };
-
-// export const deleteSalon = (id: string) => {
-//   return async (dispatch: Dispatch) => {
-//     axiosRequest("delete", `/salons/${id}`, {}, true)
-//       .then(async (res: any) => {
-//         dispatch({
-//           type: "SET_ARTIFACTS",
-//           products: res.data,
-//         });
-//       })
-//       .catch((err) => console.log(err));
-//   };
-// };
-
-// ================================
-export const createSalon = (salonData: {}) => {
+export const setSalons = (_skip: number) => {
   return async (dispatch: Dispatch) => {
-    dispatch({
-      type: "ADD_SALON",
-      salonData,
-    });
+    axiosRequest("get", `/salons`, {}, true)
+      .then(async (res: any) => {
+        dispatch({
+          type: "SET_SALONS",
+          salonData: res.data,
+        });
+      })
+      .catch((err) => console.log(err));
   };
 };
 
-export const readAllSalons = () => {
+export const updateSalon = (id: string, updates: any) => {
   return async (dispatch: Dispatch) => {
-    dispatch({
-      type: "GET_ALL_SALONS",
-    });
+    axiosRequest("patch", `/salons/${id}`, { updates }, true)
+      .then(async (res: any) => {
+        dispatch({
+          type: "UPDATE_SALON",
+          updates,
+          id,
+        });
+      })
+      .catch((err) => console.log(err));
   };
 };
-
-export const readSalonByID = (id: string) => {
-  return async (dispatch: Dispatch) => {
-    dispatch({
-      type: "GET_SALON",
-      id,
-    });
-  };
-};
-
-// export const updateSalon = (id: string) => {
-//   return async (dispatch: Dispatch) => {
-//     dispatch({
-//       type: "UPDATE_SALON",
-//       products: res.data,
-//     });
-//   };
-// };
 
 export const deleteSalon = (id: string) => {
   return async (dispatch: Dispatch) => {
-    dispatch({
-      type: "DELETE_SALON",
-      id,
-    });
+    axiosRequest("delete", `/salons/${id}`, {}, true)
+      .then(async (res: any) => {
+        dispatch({
+          type: "DELETE_SALON",
+          id,
+        });
+      })
+      .catch((err) => console.log(err));
   };
 };

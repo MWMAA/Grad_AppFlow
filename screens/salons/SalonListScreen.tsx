@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FlatList, TouchableOpacity, StyleSheet } from "react-native";
 import SalonCard from "../../components/SalonCard";
-// import * as salonActions from "../../store/actions/salons";
+import * as salonActions from "../../store/actions/Salon";
 import { useDispatch, useSelector } from "react-redux";
 
 const SalonListScreen = (props: any) => {
@@ -16,24 +16,24 @@ const SalonListScreen = (props: any) => {
     });
   };
 
-  // useEffect(() => {
-  //   const getSalons = () => {
-  //     dispatch(salonActions.fetchSalons(skip));
-  //     setSkip(skip + 5);
-  //   };
-  //   getSalons();
-  // }, [dispatch]);
+  useEffect(() => {
+    const getSalons = () => {
+      dispatch(salonActions.setSalons(skip));
+      setSkip(skip + 5);
+    };
+    getSalons();
+  }, [dispatch]);
 
-  // const fetchData = () => {
-  //   dispatch(salonActions.fetchSalons(skip));
-  //   setSkip(skip + 5);
-  // };
+  const fetchData = () => {
+    dispatch(salonActions.setSalons(skip));
+    setSkip(skip + 5);
+  };
 
   return (
     <FlatList
       data={Salons}
       keyExtractor={(item) => item._id}
-      // onEndReached={fetchData}
+      onEndReached={fetchData}
       style={styles.container}
       renderItem={(itemData) => (
         <TouchableOpacity
