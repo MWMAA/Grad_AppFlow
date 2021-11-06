@@ -1,8 +1,8 @@
 import { AnyAction } from "redux";
 import { ADD_TO_CART, REMOVE_FROM_CART } from "../actions/cart";
-// import { ADD_ORDER } from '../actions/orders';
+import { ADD_ORDER } from "../actions/orders";
 import CartItem from "../../models/cart-item";
-// import { DELETE_PRODUCT } from '../actions/products';
+// import { DELETE_PRODUCT } from "../actions/products";
 
 const initialState = {
   items: {},
@@ -13,29 +13,29 @@ export default (state = initialState, action: AnyAction) => {
   switch (action.type) {
     case ADD_TO_CART:
       const addedProduct = action.product;
-      const prodPrice = addedProduct.price;
-      const prodTitle = addedProduct.title;
+      const prodPrice = addedProduct.cost;
+      const prodName = addedProduct.name;
 
       let updatedOrNewCartItem;
 
-      if (state.items[addedProduct.id]) {
+      if (state.items[addedProduct.name]) {
         // already have the item in the cart
         updatedOrNewCartItem = new CartItem(
-          state.items[addedProduct.id].quantity + 1,
+          state.items[addedProduct.name].quantity + 1,
           prodPrice,
-          prodTitle,
-          state.items[addedProduct.id].sum + prodPrice
+          prodName,
+          state.items[addedProduct.name].sum + prodPrice
         );
       } else {
-        updatedOrNewCartItem = new CartItem(1, prodPrice, prodTitle, prodPrice);
+        updatedOrNewCartItem = new CartItem(1, prodPrice, prodName, prodPrice);
       }
       return {
         ...state,
-        items: { ...state.items, [addedProduct.id]: updatedOrNewCartItem },
+        items: { ...state.items, [addedProduct.name]: updatedOrNewCartItem },
         totalAmount: state.totalAmount + prodPrice,
       };
     case REMOVE_FROM_CART:
-      const selectedCartItem = state.items[action.pid];
+      const selectedCartItem = state.items[action.name];
       const currentQty = selectedCartItem.quantity;
       let updatedCartItems;
       if (currentQty > 1) {
@@ -43,32 +43,32 @@ export default (state = initialState, action: AnyAction) => {
         const updatedCartItem = new CartItem(
           selectedCartItem.quantity - 1,
           selectedCartItem.productPrice,
-          selectedCartItem.productTitle,
+          selectedCartItem.productName,
           selectedCartItem.sum - selectedCartItem.productPrice
         );
-        updatedCartItems = { ...state.items, [action.pid]: updatedCartItem };
+        updatedCartItems = { ...state.items, [action.name]: updatedCartItem };
       } else {
         updatedCartItems = { ...state.items };
-        delete updatedCartItems[action.pid];
+        delete updatedCartItems[action.name];
       }
       return {
         ...state,
         items: updatedCartItems,
         totalAmount: state.totalAmount - selectedCartItem.productPrice,
       };
-    // case ADD_ORDER:
-    //   return initialState;
+    case ADD_ORDER:
+      return initialState;
     // case DELETE_PRODUCT:
-    //   if (!state.items[action.pid]) {
+    //   if (!state.items[action.name]) {
     //     return state;
     //   }
     //   const updatedItems = { ...state.items };
-    //   const itemTotal = state.items[action.pid].sum;
-    //   delete updatedItems[action.pid];
+    //   const itemTotal = state.items[action.name].sum;
+    //   delete updatedItems[action.name];
     //   return {
     //     ...state,
     //     items: updatedItems,
-    //     totalAmount: state.totalAmount - itemTotal
+    //     totalAmount: state.totalAmount - itemTotal,
     //   };
   }
 

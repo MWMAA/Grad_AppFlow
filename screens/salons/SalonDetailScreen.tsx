@@ -1,16 +1,12 @@
 import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Button,
-} from "react-native";
+import { StyleSheet, ScrollView, Button, Platform } from "react-native";
 import { useSelector } from "react-redux";
+import { FlatList } from "react-native-gesture-handler";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+
 import SalonCard from "../../components/SalonCard";
 import OrderCard from "../../components/OrderCard";
-import { FlatList } from "react-native-gesture-handler";
+import HeaderButton from "../../components/UI/HeaderButton";
 
 const SalonDetailScreen = (props: any) => {
   const Salons = useSelector((state) => state.salon.salonData);
@@ -33,38 +29,27 @@ const SalonDetailScreen = (props: any) => {
 };
 
 const styles = StyleSheet.create({
-  scrollView: {
-    // flex: 1,
-    // backgroundColor: "white",
-  },
   text: {
     fontFamily: "open-sans",
     backgroundColor: "white",
-    // fontSize: 14,
-    // paddingHorizontal: 8,
-  },
-  card: {
-    // flex: 1,
-  },
-  shareView: {
-    // justifyContent: "center",
-    // alignItems: "center",
-  },
-  shareBtn: {
-    // width: "50%",
-    // backgroundColor: "#f3cfad",
-    // borderRadius: 25,
-    // height: 40,
-    // alignItems: "center",
-    // justifyContent: "center",
-    // marginTop: 10,
-    // marginBottom: 10,
-  },
-  shareText: {
-    // color: "grey",
-    // fontFamily: "open-sans-bold",
-    // fontSize: 24,
   },
 });
+
+export const screenOptions = (navData: any) => {
+  return {
+    // headerTitle: "All Products",
+    headerRight: () => (
+      <HeaderButtons HeaderButtonComponent={HeaderButton}>
+        <Item
+          title="Cart"
+          iconName={Platform.OS === "android" ? "md-cart" : "ios-cart"}
+          onPress={() => {
+            navData.navigation.navigate("My Cart");
+          }}
+        />
+      </HeaderButtons>
+    ),
+  };
+};
 
 export default SalonDetailScreen;

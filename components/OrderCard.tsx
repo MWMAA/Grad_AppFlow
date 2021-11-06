@@ -1,14 +1,10 @@
 import React from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  Button,
-} from "react-native";
+import { Text, View, StyleSheet, Image, Button } from "react-native";
+import { useDispatch } from "react-redux";
+import * as cartActions from "../store/actions/cart";
 
 const OrderCard = (props: any) => {
+  const dispatch = useDispatch();
   const data = props.data;
 
   return (
@@ -37,7 +33,12 @@ const OrderCard = (props: any) => {
         </View>
       </View>
       <View style={styles.RSection}>
-        <Button title="Book" onPress={() => {}} />
+        <Button
+          title="Book"
+          onPress={() => {
+            dispatch(cartActions.addToCart(data.item));
+          }}
+        />
       </View>
     </View>
   );
