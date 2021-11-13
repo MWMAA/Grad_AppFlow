@@ -1,8 +1,17 @@
 import React from "react";
-import { StyleSheet, ScrollView, Button, Platform } from "react-native";
+import {
+  StyleSheet,
+  ScrollView,
+  Button,
+  Platform,
+  View,
+  Pressable,
+  Text,
+} from "react-native";
 import { useSelector } from "react-redux";
 import { FlatList } from "react-native-gesture-handler";
-import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { HeaderButtons } from "react-navigation-header-buttons";
+import { Ionicons } from "@expo/vector-icons";
 
 import SalonCard from "../../components/SalonCard";
 import OrderCard from "../../components/OrderCard";
@@ -14,10 +23,16 @@ const SalonDetailScreen = (props: any) => {
   const Salon = Salons.find((item) => item._id === salonId);
 
   return (
-    <ScrollView style={styles.text}>
+    <ScrollView style={styles.container}>
       <SalonCard data={Salon} detailScreen={true}>
-        <Button title="Services" onPress={() => {}} />
-        <Button title="Reviewes" onPress={() => {}} />
+        <View style={styles.button_group}>
+          <Pressable onPress={() => {}} style={styles.button}>
+            <Text style={styles.text}>Services</Text>
+          </Pressable>
+          <Pressable onPress={() => {}} style={styles.button}>
+            <Text style={styles.text}>Reviews</Text>
+          </Pressable>
+        </View>
         <FlatList
           data={Salon.services}
           keyExtractor={(item) => item._id}
@@ -29,9 +44,36 @@ const SalonDetailScreen = (props: any) => {
 };
 
 const styles = StyleSheet.create({
+  button: {
+    display: "flex",
+    width: "50%",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: "black",
+  },
   text: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: "bold",
+    letterSpacing: 0.25,
+    color: "white",
+  },
+  container: {
     fontFamily: "open-sans",
     backgroundColor: "white",
+  },
+  button_group: {
+    display: "flex",
+    flexDirection: "row",
+    width: "100%",
+  },
+  btn: {
+    display: "flex",
+    width: "50",
   },
 });
 
@@ -40,9 +82,10 @@ export const screenOptions = (navData: any) => {
     // headerTitle: "All Products",
     headerRight: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
-        <Item
-          title="Cart"
-          iconName={Platform.OS === "android" ? "md-cart" : "ios-cart"}
+        <Ionicons
+          name={Platform.OS === "android" ? "md-cart" : "ios-cart"}
+          size={24}
+          color="blue"
           onPress={() => {
             navData.navigation.navigate("My Cart");
           }}

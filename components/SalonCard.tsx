@@ -1,10 +1,10 @@
 import React from "react";
-import { Text, View, StyleSheet, Image } from "react-native";
+import { Text, View, StyleSheet, Image, Dimensions } from "react-native";
 
 const SalonCard = (props: any) => {
   const data = props.data;
   return (
-    <View>
+    <View style={styles.container_width}>
       <View style={styles.container}>
         <View style={styles.LSection}>
           <View style={styles.mainImageContainer}>
@@ -48,6 +48,7 @@ const SalonCard = (props: any) => {
 };
 
 const styles = StyleSheet.create({
+  container_width: { width: Dimensions.get("window").width },
   container: {
     display: "flex",
     flexDirection: "row",

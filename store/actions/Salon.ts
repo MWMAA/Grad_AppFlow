@@ -2,7 +2,7 @@ import axios, { Method } from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Dispatch } from "redux";
 
-const Link = "http://192.168.1.103:3000";
+const Link = "http://192.168.1.101:3000";
 
 const axiosRequest = async (
   RequestMethod: Method,
@@ -22,18 +22,18 @@ const axiosRequest = async (
   }).catch((err) => console.log(err));
 };
 
-// export const createSalon = (salonData: {}) => {
-//   return async (dispatch: Dispatch) => {
-//     axiosRequest("post", "/salons", { ...salonData }, true)
-//       .then(async (res: any) => {
-//         dispatch({
-//           type: "ADD_SALON",
-//           salonData: res.data,
-//         });
-//       })
-//       .catch((err) => console.log(err));
-//   };
-// };
+export const createSalon = (salonData: {}) => {
+  return async (dispatch: Dispatch) => {
+    axiosRequest("post", "/salons", { ...salonData }, true)
+      .then(async (res: any) => {
+        dispatch({
+          type: "ADD_SALON",
+          salonData: res.data,
+        });
+      })
+      .catch((err) => console.log(err));
+  };
+};
 
 export const setSalons = (_skip: number) => {
   return async (dispatch: Dispatch) => {

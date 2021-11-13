@@ -1,10 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 import {
   StyleSheet,
   View,
   Text,
   Dimensions,
-  TouchableOpacity,
+  TouchableHighlight,
+  Image,
   Platform,
 } from "react-native";
 import { Camera } from "expo-camera";
@@ -13,9 +14,8 @@ import * as ImagePicker from "expo-image-picker";
 
 const CameraComponent = () => {
   const cameraRef = useRef();
-  const [hasCameraPermission, setHasCameraPermission] = useState(null);
-  const [type, setType] = useState(Camera.Constants.Type.back);
-  const [image, setImage] = useState(null);
+  const [path, setPath] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.front);
 
   // Screen Ratio and image padding
   const [imagePadding, setImagePadding] = useState(0);
@@ -24,16 +24,45 @@ const CameraComponent = () => {
   const screenRatio = height / width;
   const [isRatioSet, setIsRatioSet] = useState(false);
 
-  // on screen  load, ask for permission to use the camera
-  useEffect(() => {
-    async function getCameraStatus() {
-      const { status } = await Camera.requestPermissionsAsync();
-      setHasCameraPermission(status == "granted");
+  const takePicture = async () => {
+    try {
+      const data = await cameraRef.current!.takePictureAsync();
+      setPath(data.uri);
+    } catch (err) {
+      console.log("err: ", err);
     }
-    getCameraStatus();
-  }, []);
+  };
 
-  // set the camera ratio and padding. (portrait mode)
+  const typeSetter = () => {
+    setType(
+      type === Camera.Constants.Type.back
+        ? Camera.Constants.Type.front
+        : Camera.Constants.Type.back
+    );
+  };
+
+  const pickImage = async () => {
+    async () => {
+      if (Platform.OS !== "web") {
+        const { status } =
+          await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== "granted") {
+          alert("Sorry, we need camera roll permissions to make this work!");
+        }
+      }
+    };
+
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      setPath(result.uri);
+    }
+  };
+
   const prepareRatio = async () => {
     let desiredRatio = "4:3";
     if (Platform.OS === "android") {
@@ -75,124 +104,109 @@ const CameraComponent = () => {
     }
   };
 
-  const onSnap = async () => {
-    if (cameraRef.current) {
-      const options = { quality: 0.7, base64: true };
-      const data = await cameraRef.current.takePictureAsync(options);
-      const source = data.base64;
-
-      if (source) {
-        await cameraRef.current.pausePreview();
-        // console.log(source);
-        setImage(source);
-      }
-    }
-  };
-
-  const cancelPreview = async () => {
-    await cameraRef.current!.resumePreview();
-    setIsPreview(false);
-  };
-
-  const typeSetter = () => {
-    setType(
-      type === Camera.Constants.Type.back
-        ? Camera.Constants.Type.front
-        : Camera.Constants.Type.back
-    );
-  };
-
-  const pickImage = async () => {
-    async () => {
-      if (Platform.OS !== "web") {
-        const { status } =
-          await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== "granted") {
-          alert("Sorry, we need camera roll permissions to make this work!");
+  const renderCamera = () => {
+    return (
+      <Camera
+        ref={cameraRef}
+        style={styles.preview}
+        onCameraReady={setCameraReady}
+        ratio={ratio}
+        type={type}
+        flashMode={Camera.Constants.FlashMode.off}
+        permissionDialogTitle={"Permission to use camera"}
+        permissionDialogMessage={
+          "We need your permission to use your camera phone"
         }
-      }
-    };
-
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      // allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.cancelled) {
-      setImage(result.uri);
-    }
+      >
+        <View style={styles.buttonContainer}>
+          <TouchableHighlight
+            style={styles.button}
+            onPress={pickImage}
+            underlayColor="rgba(255, 255, 255, 0.0)"
+          >
+            <Ionicons name="folder-outline" size={30} color="white" />
+          </TouchableHighlight>
+          <TouchableHighlight
+            style={styles.capture}
+            onPress={takePicture}
+            underlayColor="rgba(255, 255, 255, 0.5)"
+          >
+            <View />
+          </TouchableHighlight>
+          <TouchableHighlight
+            style={styles.button}
+            onPress={typeSetter}
+            underlayColor="rgba(255, 255, 255, 0.0)"
+          >
+            <Ionicons name="camera-reverse" size={30} color="white" />
+          </TouchableHighlight>
+        </View>
+      </Camera>
+    );
   };
 
-  if (hasCameraPermission === null) {
+  const renderImage = () => {
     return (
-      <View style={styles.information}>
-        <Text>Waiting for camera permissions</Text>
+      <View>
+        <Image source={{ uri: path }} style={styles.preview} />
+        <Text style={styles.cancel} onPress={() => setPath(null)}>
+          Cancel
+        </Text>
       </View>
     );
-  } else if (hasCameraPermission === false) {
-    return (
-      <View style={styles.information}>
-        <Text>No access to camera</Text>
-      </View>
-    );
-  } else {
-    return (
-      <View style={styles.container}>
-        <Camera
-          style={[
-            styles.cameraPreview,
-            { marginTop: imagePadding, marginBottom: imagePadding },
-          ]}
-          onCameraReady={setCameraReady}
-          ratio={ratio}
-          ref={cameraRef}
-          type={type}
-        >
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={pickImage}>
-              <Ionicons name="folder-outline" size={30} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={onSnap}>
-              <Ionicons name="scan-circle-outline" size={56} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={typeSetter}>
-              <Ionicons name="camera-reverse" size={30} color="white" />
-            </TouchableOpacity>
-          </View>
-        </Camera>
-      </View>
-    );
-  }
+  };
+
+  return (
+    <View style={styles.container}>
+      {path ? renderImage() : renderCamera()}
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-  information: {
-    flex: 1,
-    justifyContent: "center",
-    alignContent: "center",
-    alignItems: "center",
-  },
   container: {
     flex: 1,
-    backgroundColor: "#000",
+    alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#000",
   },
-  cameraPreview: {
+  preview: {
     flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "center",
+    height: Dimensions.get("window").height,
+    width: Dimensions.get("window").width,
+  },
+  capture: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    borderWidth: 5,
+    borderColor: "#FFF",
+    marginBottom: 15,
   },
   buttonContainer: {
-    flex: 1,
-    backgroundColor: "transparent",
     flexDirection: "row",
     justifyContent: "space-between",
     margin: 15,
   },
   button: {
-    flex: 0.2,
+    flex: 1,
     alignSelf: "flex-end",
     alignItems: "center",
+    marginBottom: 30,
+  },
+  cancel: {
+    position: "absolute",
+    right: 20,
+    top: 50,
+    color: "#FFF",
+    fontWeight: "600",
+    fontSize: 17,
+    backgroundColor: "#FF0000",
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderRadius: 10,
   },
 });
 
