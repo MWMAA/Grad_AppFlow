@@ -11,6 +11,9 @@ import {
 import { Camera } from "expo-camera";
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import cameraPreview from "./cameraPreview";
 
 const CameraComponent = () => {
   const cameraRef = useRef();
@@ -28,6 +31,27 @@ const CameraComponent = () => {
     try {
       const data = await cameraRef.current!.takePictureAsync();
       setPath(data.uri);
+
+      const accessToken = await AsyncStorage.getItem("Access_Token");
+
+      const form = new FormData();
+      form.append("image", {
+        uri: data.uri,
+        type: "image/jpeg",
+        name: "image.jpg",
+      });
+
+      await axios({
+        method: "post",
+        url: "http://192.168.1.101:5000/hairRecommendation",
+        data: form,
+        headers: {
+          "Content-type": "multipart/form-data",
+          // Authorization: `Bearer ${accessToken}`,
+        },
+      })
+        .then((res) => console.log(res))
+        .catch((e) => console.log(e));
     } catch (err) {
       console.log("err: ", err);
     }
@@ -145,20 +169,9 @@ const CameraComponent = () => {
     );
   };
 
-  const renderImage = () => {
-    return (
-      <View>
-        <Image source={{ uri: path }} style={styles.preview} />
-        <Text style={styles.cancel} onPress={() => setPath(null)}>
-          Cancel
-        </Text>
-      </View>
-    );
-  };
-
   return (
     <View style={styles.container}>
-      {path ? renderImage() : renderCamera()}
+      {path ? cameraPreview({ path, setPath }) : renderCamera()}
     </View>
   );
 };
