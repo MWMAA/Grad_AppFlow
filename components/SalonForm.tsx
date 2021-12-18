@@ -118,7 +118,7 @@ const SalonForm = (props: any) => {
               <Button
                 //   color="primary"
                 //   size="large"
-                title="Button with icon component"
+                title="Save"
                 onPress={() => handleSubmit(values)}
                 //   disabled={!formik.isValid || formik.isSubmitting}
               />

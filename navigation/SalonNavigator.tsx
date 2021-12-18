@@ -20,11 +20,24 @@ import SalonFormScreen, {
   screenOptions as SalonFormOptions,
 } from "../screens/SalonFormScreen";
 
+const defaultNavOptions = {
+  headerStyle: {
+    backgroundColor: "orange",
+  },
+  headerTitleStyle: {
+    fontFamily: "open-sans-bold",
+  },
+  headerBackTitleStyle: {
+    fontFamily: "open-sans",
+  },
+  headerTintColor: "black",
+};
+
 const SalonStack = createNativeStackNavigator();
 
 const SalonStackNavigator = () => {
   return (
-    <SalonStack.Navigator>
+    <SalonStack.Navigator screenOptions={defaultNavOptions}>
       <SalonStack.Screen
         name="Home"
         component={HomeScreen}
@@ -70,7 +83,7 @@ const SettingsStackNavigator = createNativeStackNavigator();
 
 const SettingsNavigator = () => {
   return (
-    <SettingsStackNavigator.Navigator>
+    <SettingsStackNavigator.Navigator screenOptions={defaultNavOptions}>
       <SettingsStackNavigator.Screen
         name="Configurations"
         component={ProfileScreen}
@@ -84,12 +97,12 @@ const OrderssStackNavigator = createNativeStackNavigator();
 
 const OrderssNavigator = () => {
   return (
-    <SettingsStackNavigator.Navigator>
-      <SettingsStackNavigator.Screen
+    <OrderssStackNavigator.Navigator screenOptions={defaultNavOptions}>
+      <OrderssStackNavigator.Screen
         name="Previous Appointments"
         component={OrdersScreen}
       />
-    </SettingsStackNavigator.Navigator>
+    </OrderssStackNavigator.Navigator>
   );
 };
 
