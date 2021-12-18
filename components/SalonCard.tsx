@@ -1,5 +1,6 @@
 import React from "react";
-import { Text, View, StyleSheet, Image, Dimensions } from "react-native";
+import { Text, View, StyleSheet, Dimensions } from "react-native";
+import { Image } from "react-native-elements";
 
 const SalonCard = (props: any) => {
   const data = props.data;
@@ -7,26 +8,23 @@ const SalonCard = (props: any) => {
     <View style={styles.container_width}>
       <View style={styles.container}>
         <View style={styles.LSection}>
-          <View style={styles.mainImageContainer}>
-            <Image
-              style={
-                props.detailScreen
-                  ? styles.mainImage
-                  : { ...styles.mainImage, width: "100%" }
-              }
-              source={{
-                // uri: `data:image/jpeg;base64,${data.Image}`,
-                uri: "https://scontent.fcai19-4.fna.fbcdn.net/v/t31.18172-8/1658139_721727101205007_521350763_o.jpg?_nc_cat=105&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=gLGzaOl6S7IAX8Qtu6i&_nc_ht=scontent.fcai19-4.fna&oh=8ae76b27db326229148920b1f3a0d9a0&oe=61A3F4F7",
-              }}
-            />
-          </View>
+          <Image
+            containerStyle={styles.mainImageContainer}
+            style={
+              props.detailScreen
+                ? styles.mainImage
+                : { ...styles.mainImage, width: "100%" }
+            }
+            source={{
+              // uri: `data:image/jpeg;base64,${data.Image}`,
+              uri: "https://scontent.fcai19-4.fna.fbcdn.net/v/t31.18172-8/1658139_721727101205007_521350763_o.jpg?_nc_cat=105&ccb=1-5&_nc_sid=09cbfe&_nc_ohc=gLGzaOl6S7IAX8Qtu6i&_nc_ht=scontent.fcai19-4.fna&oh=8ae76b27db326229148920b1f3a0d9a0&oe=61A3F4F7",
+            }}
+          />
           <View>
             <View style={styles.LSectionText}>
               <Text style={styles.title}>{data.name}</Text>
               <Text style={styles.about}>
-                {data.address.country +
-                  ", " +
-                  data.address.city +
+                {data.address.city +
                   ", " +
                   data.address.street +
                   ", " +
@@ -42,28 +40,30 @@ const SalonCard = (props: any) => {
           <Text>{data.open_hrs.closing_hour}</Text>
         </View>
       </View>
-      {props.children && <View>{props.children}</View>}
+      {props.children && <View style={styles.list}>{props.children}</View>}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container_width: { width: Dimensions.get("window").width },
+  container_width: {
+    width: Dimensions.get("window").width,
+    display: "flex",
+  },
   container: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    flex: 1,
-    height: "100%",
     backgroundColor: "white",
     marginBottom: 5,
     paddingHorizontal: 5,
   },
+  list: { display: "flex", height: "100%" },
   mainImage: {
     height: "100%",
     width: "100%",
   },
-  mainImageContainer: { height: 90, width: 90 },
+  mainImageContainer: { borderRadius: 25, height: 90, width: 90 },
   LSection: {
     flexDirection: "row",
     overflow: "hidden",
@@ -78,15 +78,20 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   title: {
-    fontWeight: "700",
     fontSize: 20,
-    lineHeight: 30,
-    letterSpacing: -0.025,
+    lineHeight: 21,
+    fontWeight: "bold",
+    letterSpacing: 0.25,
+    color: "#464545",
+    padding: 10,
   },
   about: {
     fontSize: 14,
-    fontWeight: "500",
-    letterSpacing: -0.05,
+    lineHeight: 21,
+    fontWeight: "bold",
+    letterSpacing: 0.25,
+    color: "#807D7D",
+    paddingHorizontal: 10,
   },
 });
 

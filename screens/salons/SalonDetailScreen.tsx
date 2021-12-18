@@ -27,14 +27,13 @@ const SalonDetailScreen = (props: any) => {
   const Salon = Salons.find((item) => item._id === salonId);
 
   selectedSalon = Salon;
-  let selectedMode = 0;
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <SalonCard data={Salon} detailScreen={true}>
         <View style={styles.button_group}>
           <Button
-            type={mode === 0 ? "solid" : "clear"}
+            type={mode === 0 ? "solid" : "outline"}
             buttonStyle={styles.button}
             title="Services"
             onPress={() => {
@@ -51,11 +50,13 @@ const SalonDetailScreen = (props: any) => {
           />
         </View>
         {mode === 0 ? (
-          <FlatList
-            data={Salon.services}
-            keyExtractor={(item) => item._id}
-            renderItem={(itemData) => <OrderCard data={itemData} />}
-          />
+          <View style={styles.list}>
+            <FlatList
+              data={Salon.services}
+              keyExtractor={(item) => item._id}
+              renderItem={(itemData) => <OrderCard data={itemData} />}
+            />
+          </View>
         ) : (
           <Text style={styles.text}>
             No Reviews Available yet. Don't hesitate to be the first one to add
@@ -63,11 +64,12 @@ const SalonDetailScreen = (props: any) => {
           </Text>
         )}
       </SalonCard>
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  list: { height: "100%", display: "flex" },
   button: {
     display: "flex",
     width: Dimensions.get("window").width / 2,
@@ -83,6 +85,7 @@ const styles = StyleSheet.create({
   container: {
     fontFamily: "open-sans",
     backgroundColor: "white",
+    // height: "100%",
   },
   button_group: {
     display: "flex",
