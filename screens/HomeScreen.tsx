@@ -1,15 +1,34 @@
 import React from "react";
-import { View, Text } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../App";
+import { View } from "react-native";
 import SalonListScreen from "./salons/SalonListScreen";
+import { HeaderButtons } from "react-navigation-header-buttons";
+import HeaderButton from "../components/UI/HeaderButton";
+import { Ionicons } from "@expo/vector-icons";
 
-const HomeScreen: React.FC = (props) => {
-  // const dispatch = useDispatch();
-  // const salons = useSelector((state: RootState) => state.salons.salonData);
+const HomeScreen = (props: any) => {
+  return (
+    <View>
+      <SalonListScreen navigation={props.navigation} />
+    </View>
+  );
+};
 
-  return <SalonListScreen navigation={props.navigation} />;
-  // return <Text>kabpho</Text>;
+export const screenOptions = (navData: any) => {
+  return {
+    headerTitle: "Home",
+    headerRight: () => (
+      <HeaderButtons HeaderButtonComponent={HeaderButton}>
+        <Ionicons
+          name="add-circle"
+          size={24}
+          color="blue"
+          onPress={() => {
+            navData.navigation.navigate("SalonForm");
+          }}
+        />
+      </HeaderButtons>
+    ),
+  };
 };
 
 export default HomeScreen;

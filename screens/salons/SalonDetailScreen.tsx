@@ -2,7 +2,6 @@ import React from "react";
 import {
   StyleSheet,
   ScrollView,
-  Button,
   Platform,
   View,
   Pressable,
@@ -17,10 +16,14 @@ import SalonCard from "../../components/SalonCard";
 import OrderCard from "../../components/OrderCard";
 import HeaderButton from "../../components/UI/HeaderButton";
 
+let selectedSalon = {};
+
 const SalonDetailScreen = (props: any) => {
   const Salons = useSelector((state) => state.salon.salonData);
   const { salonId } = props.route.params;
   const Salon = Salons.find((item) => item._id === salonId);
+
+  selectedSalon = Salon;
 
   return (
     <ScrollView style={styles.container}>
@@ -82,6 +85,14 @@ export const screenOptions = (navData: any) => {
     // headerTitle: "All Products",
     headerRight: () => (
       <HeaderButtons HeaderButtonComponent={HeaderButton}>
+        <Ionicons
+          name="create"
+          size={24}
+          color="green"
+          onPress={() => {
+            navData.navigation.navigate("SalonForm", { salon: selectedSalon });
+          }}
+        />
         <Ionicons
           name={Platform.OS === "android" ? "md-cart" : "ios-cart"}
           size={24}

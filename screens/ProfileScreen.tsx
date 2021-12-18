@@ -1,6 +1,7 @@
 import React from "react";
-import { View, Text, FlatList, Button, StyleSheet } from "react-native";
+import { View, Text, FlatList, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Button } from "react-native-elements";
 
 const ProfileScreen: React.FC = () => {
   const data = [
@@ -28,7 +29,7 @@ const ProfileScreen: React.FC = () => {
           </View>
         )}
       />
-      <Button title="Logout" onPress={() => {}} />
+      <Button title="Logout" type="clear" onPress={() => {}} />
     </View>
   );
 };

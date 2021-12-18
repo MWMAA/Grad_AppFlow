@@ -3,7 +3,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 
-import HomeScreen from "../screens/HomeScreen";
+import HomeScreen, {
+  screenOptions as HomeOptions,
+} from "../screens/HomeScreen";
 import ProfileScreen, {
   screenOptions as ProfileOptions,
 } from "../screens/ProfileScreen";
@@ -14,19 +16,31 @@ import SalonDetailScreen, {
   screenOptions as SalonDetailsOptions,
 } from "../screens/salons/SalonDetailScreen";
 import CartScreen from "../screens/CartScreen";
+import SalonFormScreen, {
+  screenOptions as SalonFormOptions,
+} from "../screens/SalonFormScreen";
 
 const SalonStack = createNativeStackNavigator();
 
 const SalonStackNavigator = () => {
   return (
     <SalonStack.Navigator>
-      <SalonStack.Screen name="Home" component={HomeScreen} />
+      <SalonStack.Screen
+        name="Home"
+        component={HomeScreen}
+        options={HomeOptions}
+      />
       <SalonStack.Screen
         name="DetailScreen"
         component={SalonDetailScreen}
         options={SalonDetailsOptions}
       />
       <SalonStack.Screen name="My Cart" component={CartScreen} />
+      <SalonStack.Screen
+        name="SalonForm"
+        component={SalonFormScreen}
+        options={SalonFormOptions}
+      />
     </SalonStack.Navigator>
   );
 };
