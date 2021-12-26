@@ -28,6 +28,8 @@ const CartScreen = (props: any) => {
     );
   });
 
+  const salonId = props.route.params.salonId;
+
   const dispatch = useDispatch();
 
   return (
@@ -44,7 +46,9 @@ const CartScreen = (props: any) => {
           title="Book Now"
           disabled={cartItems.length === 0}
           onPress={() => {
-            dispatch(ordersActions.addOrder(cartItems, cartTotalAmount));
+            dispatch(
+              ordersActions.addOrder(cartItems, cartTotalAmount, salonId)
+            );
           }}
         />
       </Card>
