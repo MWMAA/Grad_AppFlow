@@ -16,9 +16,7 @@ import SalonDetailScreen, {
   screenOptions as SalonDetailsOptions,
 } from "../screens/salons/SalonDetailScreen";
 import CartScreen from "../screens/CartScreen";
-import SalonFormScreen, {
-  screenOptions as SalonFormOptions,
-} from "../screens/SalonFormScreen";
+import SalonFormScreen from "../screens/SalonFormScreen";
 
 const defaultNavOptions = {
   headerStyle: {
@@ -49,11 +47,7 @@ const SalonStackNavigator = () => {
         options={SalonDetailsOptions}
       />
       <SalonStack.Screen name="My Cart" component={CartScreen} />
-      <SalonStack.Screen
-        name="SalonForm"
-        component={SalonFormScreen}
-        options={SalonFormOptions}
-      />
+      <SalonStack.Screen name="SalonForm" component={SalonFormScreen} />
     </SalonStack.Navigator>
   );
 };
