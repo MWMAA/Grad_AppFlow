@@ -2,6 +2,7 @@ import { Schema, model } from "mongoose";
 
 import { Appointment } from "../interfaces/appointment";
 import AppError from "../utils/appError";
+import { servicesSchema } from "./salon";
 
 const appointmentSchema = new Schema<Appointment>(
   {
@@ -15,25 +16,28 @@ const appointmentSchema = new Schema<Appointment>(
       ref: "salon",
       required: true,
     },
-    date: {
-      type: Date,
-      required: true,
-      validate(date: string) {
-        if (new Date(date) < new Date()) {
-          throw new AppError("Date isnt valid", 400);
-        }
-      },
-    },
+    // date: {
+    //   type: Date,
+    //   required: true,
+    //   validate(date: string) {
+    //     if (new Date(date) < new Date()) {
+    //       throw new AppError("Date isnt valid", 400);
+    //     }
+    //   },
+    // },
     completed: {
       type: Boolean,
       default: false,
     },
-    services: [
-      {
-        type: String,
-        required: true,
-      },
-    ],
+    services: {
+      _id: false,
+      type: [servicesSchema],
+      required: true,
+    },
+    totalCost: {
+      type: Number,
+      required: true,
+    },
   },
   {
     timestamps: true,

@@ -5,7 +5,7 @@ import { Salon } from "../interfaces/salon";
 import AppError from "../utils/appError";
 import Appointment from "./appointment";
 
-const servicesSchema = new Schema(
+export const servicesSchema = new Schema(
   {
     name: { type: String, required: true },
     cost: { type: Number, required: true },
