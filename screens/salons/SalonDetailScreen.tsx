@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  ScrollView,
-  Platform,
-  View,
-  Pressable,
-  Text,
-  Dimensions,
-} from "react-native";
+import { StyleSheet, Platform, View, Text, Dimensions } from "react-native";
 import { useSelector } from "react-redux";
 import { FlatList } from "react-native-gesture-handler";
 import { HeaderButtons } from "react-navigation-header-buttons";
@@ -53,7 +45,7 @@ const SalonDetailScreen = (props: any) => {
           <View style={styles.list}>
             <FlatList
               data={Salon.services}
-              keyExtractor={(item) => item._id}
+              keyExtractor={(item) => item.name}
               renderItem={(itemData) => <OrderCard data={itemData} />}
             />
           </View>

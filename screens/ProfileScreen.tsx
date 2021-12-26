@@ -2,15 +2,25 @@ import React from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "react-native-elements";
+import { useSelector, useDispatch } from "react-redux";
+import * as authActions from "../store/actions/User";
 
 const ProfileScreen: React.FC = () => {
+  const dispatch = useDispatch();
+  const User = useSelector((state) => state.user.userData);
+
   const data = [
-    { key: "Username", value: "Mahmoud Wessam" },
-    { key: "Email", value: "Mahmoudamer95.bird@gmail.com" },
+    { key: "Username", value: User.name },
+    { key: "Email", value: User.email },
     { key: "Age", value: "undefined" },
     { key: "Gender", value: "Male" },
-    { key: "Balance", value: "0.00" },
+    { key: "Balance", value: User.balance },
   ];
+
+  const logout = () => {
+    dispatch(authActions.logout());
+  };
+
   return (
     <View style={styles.container}>
       <Ionicons
@@ -29,7 +39,7 @@ const ProfileScreen: React.FC = () => {
           </View>
         )}
       />
-      <Button title="Logout" type="clear" onPress={() => {}} />
+      <Button title="Logout" type="clear" onPress={logout} />
     </View>
   );
 };

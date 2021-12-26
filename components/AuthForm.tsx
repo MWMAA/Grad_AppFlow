@@ -56,7 +56,7 @@ export const AuthForm: React.FC<Props> = (props) => {
         touched,
       }) => (
         <View style={styles.container}>
-          <Text style={styles.logo}>iGRAD</Text>
+          <Text style={styles.logo}>Beauty Salons</Text>
           {newUser && errors.username && touched.username ? (
             <Text style={styles.errorTxt}>{errors.username}</Text>
           ) : null}
@@ -116,7 +116,7 @@ export const AuthForm: React.FC<Props> = (props) => {
           >
             <Text style={styles.changeText}>
               {!newUser
-                ? "New to iSAME? Signup here!"
+                ? "New to the application? Signup here!"
                 : "ALready have an account?"}
             </Text>
           </TouchableOpacity>
