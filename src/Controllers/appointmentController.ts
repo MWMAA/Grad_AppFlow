@@ -29,8 +29,10 @@ export const createAppointment: RequestHandler = catchAsync(
         return res.status(400).send({ error: "Invalid services!" });
     }
 
-    await appointment.save();
-    sendAppointmentApprovalEmail((<UserInterface>appointment.user).email);
+    console.log("appointment");
+
+    await appointment.save().catch((e) => console.log(e));
+    // sendAppointmentApprovalEmail((<UserInterface>appointment.user).email);
 
     res.status(201).send(appointment);
   }

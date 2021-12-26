@@ -6,7 +6,8 @@ export interface Appointment extends Document {
   _id?: object;
   user: UserInterface | object;
   salon: Salon | object | null;
-  date: Date;
-  services: [];
+  // date: Date;
+  totalCost: number;
+  services: any;
   completed?: boolean;
 }

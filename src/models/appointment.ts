@@ -1,7 +1,6 @@
 import { Schema, model } from "mongoose";
 
 import { Appointment } from "../interfaces/appointment";
-import AppError from "../utils/appError";
 import { servicesSchema } from "./salon";
 
 const appointmentSchema = new Schema<Appointment>(
@@ -29,14 +28,15 @@ const appointmentSchema = new Schema<Appointment>(
       type: Boolean,
       default: false,
     },
-    services: {
-      _id: false,
-      type: [servicesSchema],
-      required: true,
-    },
     totalCost: {
       type: Number,
       required: true,
+    },
+    services: {
+      _id: false,
+      type: [],
+      validate: (services: []) =>
+        Array.isArray(services) && services.length > 0,
     },
   },
   {
