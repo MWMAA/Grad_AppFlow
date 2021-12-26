@@ -189,7 +189,7 @@ const SalonForm = (props: any) => {
                 {(arrayHelpers) => (
                   <View>
                     {arrayHelpers.form.values.services.map(
-                      (sevice: object, index: number) => (
+                      (service: object, index: number) => (
                         <View key={index}>
                           <View style={styles.input_group}>
                             <View style={styles.text_input}>

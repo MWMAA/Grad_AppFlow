@@ -13,8 +13,9 @@ export default (state = initialState, action: AnyAction) => {
   switch (action.type) {
     case ADD_TO_CART:
       const addedProduct = action.product;
-      const prodPrice = addedProduct.cost;
-      const prodName = addedProduct.name;
+      const cost = addedProduct.cost;
+      const name = addedProduct.name;
+      const description = addedProduct.description;
 
       let updatedOrNewCartItem;
 
@@ -22,17 +23,18 @@ export default (state = initialState, action: AnyAction) => {
         // already have the item in the cart
         updatedOrNewCartItem = new CartItem(
           state.items[addedProduct.name].quantity + 1,
-          prodPrice,
-          prodName,
-          state.items[addedProduct.name].sum + prodPrice
+          cost,
+          name,
+          description,
+          state.items[addedProduct.name].sum + cost
         );
       } else {
-        updatedOrNewCartItem = new CartItem(1, prodPrice, prodName, prodPrice);
+        updatedOrNewCartItem = new CartItem(1, cost, name, description, cost);
       }
       return {
         ...state,
         items: { ...state.items, [addedProduct.name]: updatedOrNewCartItem },
-        totalAmount: state.totalAmount + prodPrice,
+        totalAmount: state.totalAmount + cost,
       };
     case REMOVE_FROM_CART:
       const selectedCartItem = state.items[action.name];
@@ -42,9 +44,10 @@ export default (state = initialState, action: AnyAction) => {
         // need to reduce it, not erase it
         const updatedCartItem = new CartItem(
           selectedCartItem.quantity - 1,
-          selectedCartItem.productPrice,
-          selectedCartItem.productName,
-          selectedCartItem.sum - selectedCartItem.productPrice
+          selectedCartItem.cost,
+          selectedCartItem.name,
+          selectedCartItem.description,
+          selectedCartItem.sum - selectedCartItem.cost
         );
         updatedCartItems = { ...state.items, [action.name]: updatedCartItem };
       } else {
@@ -54,7 +57,7 @@ export default (state = initialState, action: AnyAction) => {
       return {
         ...state,
         items: updatedCartItems,
-        totalAmount: state.totalAmount - selectedCartItem.productPrice,
+        totalAmount: state.totalAmount - selectedCartItem.cost,
       };
     case ADD_ORDER:
       return initialState;

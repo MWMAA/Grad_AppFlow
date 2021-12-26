@@ -22,9 +22,9 @@ const axiosRequest = async (
   });
 };
 
-export const createAppointment = (salonData: {}) => {
+export const createAppointment = (appointmentData: {}, salonId: string) => {
   return async (dispatch: Dispatch) => {
-    axiosRequest("post", "/appointments", { ...salonData }, true)
+    axiosRequest("post", "/appointments", { ...appointmentData, salonId }, true)
       .then(async (res: any) => {
         dispatch({
           type: "SET_ARTIFACTS",

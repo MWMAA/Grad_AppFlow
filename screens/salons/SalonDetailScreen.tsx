@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { StyleSheet, Platform, View, Text, Dimensions } from "react-native";
 import { useSelector } from "react-redux";
-import { FlatList } from "react-native-gesture-handler";
+import { ScrollView } from "react-native-gesture-handler";
 import { HeaderButtons } from "react-navigation-header-buttons";
 import { Ionicons } from "@expo/vector-icons";
 import { Button } from "react-native-elements";
@@ -16,6 +16,7 @@ const SalonDetailScreen = (props: any) => {
   const [mode, setMode] = useState(0);
   const Salons = useSelector((state) => state.salon.salonData);
   const { salonId } = props.route.params;
+
   let Salon;
   if (Salons) {
     Salon = Salons.find((item) => item._id === salonId);
@@ -46,13 +47,13 @@ const SalonDetailScreen = (props: any) => {
           />
         </View>
         {mode === 0 ? (
-          <View style={styles.list}>
-            <FlatList
-              data={Salon.services}
-              keyExtractor={(item) => item.name}
-              renderItem={(itemData) => <OrderCard data={itemData} />}
-            />
-          </View>
+          <ScrollView>
+            <View style={styles.list}>
+              {Salon.services.map((service: object, index: number) => (
+                <OrderCard data={service} key={service.name} />
+              ))}
+            </View>
+          </ScrollView>
         ) : (
           <Text style={styles.text}>
             No Reviews Available yet. Don't hesitate to be the first one to add
@@ -112,7 +113,9 @@ export const screenOptions = (navData: any) => {
           size={24}
           color="blue"
           onPress={() => {
-            navData.navigation.navigate("My Cart");
+            navData.navigation.navigate("My Cart", {
+              salonId: navData.route.params.salonId,
+            });
           }}
         />
       </HeaderButtons>

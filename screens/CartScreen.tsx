@@ -15,8 +15,9 @@ const CartScreen = (props: any) => {
     for (const key in state.cart.items) {
       transformedCartItems.push({
         productId: key,
-        productName: state.cart.items[key].productTitle,
-        productPrice: state.cart.items[key].productPrice,
+        name: state.cart.items[key].name,
+        cost: state.cart.items[key].cost,
+        description: state.cart.items[key].description,
         quantity: state.cart.items[key].quantity,
         sum: state.cart.items[key].sum,
       });
@@ -26,6 +27,7 @@ const CartScreen = (props: any) => {
       a.productId > b.productId ? 1 : -1
     );
   });
+
   const dispatch = useDispatch();
 
   return (
@@ -52,7 +54,7 @@ const CartScreen = (props: any) => {
         renderItem={(itemData) => (
           <CartItem
             quantity={itemData.item.quantity}
-            title={itemData.item.productName}
+            title={itemData.item.name}
             amount={itemData.item.sum}
             deletable
             onRemove={() => {

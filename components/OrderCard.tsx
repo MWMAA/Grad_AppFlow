@@ -30,24 +30,16 @@ const OrderCard = (props: any) => {
       />
 
       <View style={styles.text_section}>
-        <Text style={styles.title}>{data.item.name}</Text>
-        <Text style={styles.about}>{data.item.description}</Text>
+        <Text style={styles.title}>{data.name}</Text>
+        <Text style={styles.about}>{data.description}</Text>
         <View style={styles.payment_container}>
-          <Text style={styles.title}>${data.item.cost}</Text>
+          <Text style={styles.title}>${data.cost}</Text>
           <Button
             buttonStyle={styles.button}
             type="solid"
             title="Book"
-            onPress={() => dispatch(cartActions.addToCart(data.item))}
+            onPress={() => dispatch(cartActions.addToCart(data))}
           />
-          {/* <TouchableOpacity
-            onPress={() => {
-              dispatch(cartActions.addToCart(data.item));
-            }}
-            style={styles.button}
-          >
-            <Text style={styles.btn_text}>Book</Text>
-          </TouchableOpacity> */}
         </View>
       </View>
     </View>
