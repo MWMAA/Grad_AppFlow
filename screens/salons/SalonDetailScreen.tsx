@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Platform, View, Text, Dimensions } from "react-native";
 import { useSelector } from "react-redux";
 import { FlatList } from "react-native-gesture-handler";
@@ -16,8 +16,12 @@ const SalonDetailScreen = (props: any) => {
   const [mode, setMode] = useState(0);
   const Salons = useSelector((state) => state.salon.salonData);
   const { salonId } = props.route.params;
-  const Salon = Salons.find((item) => item._id === salonId);
-
+  let Salon;
+  if (Salons) {
+    Salon = Salons.find((item) => item._id === salonId);
+  } else {
+    return <Text>Something went very wrong please refresh</Text>;
+  }
   selectedSalon = Salon;
 
   return (

@@ -33,12 +33,12 @@ const SalonCard = (props: any) => {
             </View>
           </View>
         </View>
-        <View style={styles.RSection}>
+        {/* <View style={styles.RSection}>
           <Text>Opening</Text>
           <Text>{data.open_hrs.starting_hour}</Text>
           <Text>Closing</Text>
           <Text>{data.open_hrs.closing_hour}</Text>
-        </View>
+        </View> */}
       </View>
       {props.children && <View style={styles.list}>{props.children}</View>}
     </View>

@@ -20,9 +20,19 @@ const SalonForm = (props: any) => {
   const initialValues: any = {
     name: salon.name ? salon.name : "",
     about: salon.about ? salon.about : "",
-    email: salon.contact_Info ? salon.contact_Info.email : "",
-    landline: salon.contact_Info ? salon.contact_Info.landline : "",
-    mobile: salon.contact_Info ? salon.contact_Info.mobile[0] : "",
+    contact_Info: {
+      email: salon.contact_Info ? salon.contact_Info.email : "",
+      landline: salon.contact_Info ? salon.contact_Info.landline : "",
+      mobile: salon.contact_Info ? salon.contact_Info.mobile[0] : "",
+    },
+    address: {
+      country: salon.address.country ? salon.address.country : "",
+      city: salon.address.city ? salon.address.city : "",
+      street: salon.address.street ? salon.address.street : "",
+      building_number: salon.address.building_number
+        ? salon.address.building_number
+        : "",
+    },
     services: salon.services
       ? salon.services
       : [{ name: "", cost: "", description: "" }],
@@ -31,29 +41,38 @@ const SalonForm = (props: any) => {
   const validationSchema: any = Yup.object({
     name: Yup.string().required("This Field is Required!"),
     about: Yup.string().min(25).required("This Field is Required!"),
-    email: Yup.string()
-      .email("Invalid E-mail format!")
-      .required("This Field is Required!"),
-    landline: Yup.number(),
-    mobile: Yup.number().required("This Field is Required!"),
+    contact_Info: Yup.object().shape({
+      email: Yup.string()
+        .email("Invalid E-mail format!")
+        .required("This Field is Required!"),
+      landline: Yup.number(),
+      mobile: Yup.number().required("This Field is Required!"),
+    }),
+    address: Yup.object().shape({
+      country: Yup.string().required("This Field is Required!"),
+      city: Yup.string().required("This Field is Required!"),
+      street: Yup.string().required("This Field is Required!"),
+      building_number: Yup.string().required("This Field is Required!"),
+    }),
     services: Yup.array().of(
       Yup.object().shape({
         name: Yup.string().required("Please add at least 1 service"),
         cost: Yup.number().required("You must add a number"),
-        description: Yup.string().min(10).required("Please add a description"),
+        description: Yup.string().required("Please add a description"),
       })
     ),
   });
 
-  const submitHandler = async (values: object, newUser: boolean) => {
+  const submitHandler = async (values: object) => {
     let action;
-    if (newUser) {
+    if (!salon._id) {
       action = salonActions.createSalon(values);
     } else {
       action = salonActions.updateSalon(salon._id, values);
     }
     try {
       dispatch(action);
+      // props.navigation.goBack();
     } catch (err) {
       console.log(err);
     }
@@ -66,7 +85,7 @@ const SalonForm = (props: any) => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={(values) => {
-            submitHandler(values, true);
+            submitHandler(values);
           }}
           validateOnMount
         >
@@ -88,39 +107,81 @@ const SalonForm = (props: any) => {
                 name="email"
                 type="email"
                 label="E-mail"
-                value={values.email}
-                onChangeText={handleChange("email")}
+                value={values.contact_Info.email}
+                onChangeText={handleChange("contact_Info.email")}
               />
               <View style={styles.input_group}>
                 <View style={styles.text_input}>
                   <Field
                     component={Input}
                     name="landline"
-                    type="text"
+                    keyboardType="numeric"
                     label="Landline"
-                    value={values.landline}
-                    onChangeText={handleChange("landline")}
+                    value={values.contact_Info.landline}
+                    onChangeText={handleChange("contact_Info.landline")}
                   />
                 </View>
                 <View style={styles.text_input}>
                   <Field
                     component={Input}
                     name="mobile"
-                    type="number"
+                    keyboardType="numeric"
                     label="Mobile"
-                    value={values.mobile}
-                    onChangeText={handleChange("mobile")}
+                    value={values.contact_Info.mobile}
+                    onChangeText={handleChange("contact_Info.mobile")}
                   />
                 </View>
               </View>
               <Field
                 component={Input}
                 name="about"
-                type="text"
                 label="About"
                 value={values.about}
                 onChangeText={handleChange("about")}
               />
+              <Text h4 style={styles.title}>
+                Location
+              </Text>
+              <View style={styles.input_group}>
+                <View style={styles.text_input}>
+                  <Field
+                    component={Input}
+                    name="country"
+                    label="Country"
+                    value={values.address.country}
+                    onChangeText={handleChange("address.country")}
+                  />
+                </View>
+                <View style={styles.text_input}>
+                  <Field
+                    component={Input}
+                    name="city"
+                    label="City"
+                    value={values.address.city}
+                    onChangeText={handleChange("address.city")}
+                  />
+                </View>
+              </View>
+              <View style={styles.input_group}>
+                <View style={styles.text_input}>
+                  <Field
+                    component={Input}
+                    name="street"
+                    label="Street"
+                    value={values.address.street}
+                    onChangeText={handleChange("address.street")}
+                  />
+                </View>
+                <View style={styles.text_input}>
+                  <Field
+                    component={Input}
+                    name="building_number"
+                    label="Building Number"
+                    value={values.address.building_number}
+                    onChangeText={handleChange("address.building_number")}
+                  />
+                </View>
+              </View>
               <Text h4 style={styles.title}>
                 Services
               </Text>
@@ -135,7 +196,6 @@ const SalonForm = (props: any) => {
                               <Field
                                 component={Input}
                                 name="name"
-                                type="text"
                                 label="Name"
                                 value={values.services[index].name}
                                 onChangeText={handleChange(
@@ -147,7 +207,6 @@ const SalonForm = (props: any) => {
                               <Field
                                 component={Input}
                                 name="cost"
-                                // type="number"
                                 label="Cost"
                                 value={() =>
                                   values.services[index].cost.toString()
@@ -155,13 +214,13 @@ const SalonForm = (props: any) => {
                                 onChangeText={handleChange(
                                   `services[${index}].cost`
                                 )}
+                                keyboardType="numeric"
                               />
                             </View>
                           </View>
                           <Field
                             component={Input}
                             name="description"
-                            type="text"
                             label="Description"
                             value={values.services[index].description}
                             onChangeText={handleChange(
@@ -186,11 +245,9 @@ const SalonForm = (props: any) => {
                 )}
               </FieldArray>
               <Button
-                //   color="primary"
-                //   size="large"
                 title="Save"
-                onPress={() => console.log(values)}
-                disabled={!isValid || isSubmitting}
+                onPress={handleSubmit}
+                // disabled={!isValid || isSubmitting}
               />
             </View>
           )}
