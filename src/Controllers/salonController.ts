@@ -11,17 +11,23 @@ import {
 // Create Salon
 export const createSalon: RequestHandler = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    console.log("Hena hena");
     const salon = new Salon({
       ...req.body,
       owner: req.user,
     });
+    console.log(salon);
 
     const user = await User.findById(salon.owner);
-
-    await salon.save();
-    await user!.updateOne({ roles: "Owner" } as object);
-    sendSalonCreationEmail(salon.contact_Info.email, salon.name);
-    res.status(201).send(salon);
+    try {
+      await salon.save();
+      await user!.updateOne({ roles: "Owner" } as object);
+      sendSalonCreationEmail(salon.contact_Info.email, salon.name);
+      res.status(201).send(salon);
+    } catch (error) {
+      console.log(error);
+      res.sendStatus(500);
+    }
   }
 );
 
@@ -69,31 +75,13 @@ export const readSalon: RequestHandler = catchAsync(
 // Update Salon
 export const UpdateSalon: RequestHandler = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const update = Object.keys(req.body);
-    const allowedUpdats = [
-      "services",
-      "contact_Info",
-      "about",
-      "open_hrs",
-      "contact_Info",
-      "address",
-      "name",
-    ];
-    const isValidOperation = update.every((update) =>
-      allowedUpdats.includes(update)
-    );
-
-    if (!isValidOperation) {
-      return res.status(400).send({ error: "Invalid updates!" });
-    }
-
     const salon = await Salon.findOne({ _id: req.params.id } as object);
 
     if (!salon) {
       return res.status(404).send();
     }
 
-    await salon.updateOne(req.body, { runValidators: true });
+    await salon.update(req.body);
     await salon.save();
     res.send(salon);
   }

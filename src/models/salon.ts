@@ -33,8 +33,8 @@ const salonSchema = new Schema<Salon>(
       street: { type: String, required: true },
       building_number: { type: Number, required: true },
       mapCoords: {
-        Latitude: { type: Number, required: true },
-        Logtitude: { type: Number, required: true },
+        Latitude: { type: Number },
+        Logtitude: { type: Number },
       },
     },
     contact_Info: {
@@ -53,10 +53,8 @@ const salonSchema = new Schema<Salon>(
       landline: Number,
       mobile: {
         _id: false,
-        type: [Number],
+        type: Number,
         required: true,
-        validate: (numbers: number[]) =>
-          Array.isArray(numbers) && numbers.length > 0,
       },
     },
     services: {
@@ -66,10 +64,10 @@ const salonSchema = new Schema<Salon>(
         Array.isArray(services) && services.length > 0,
     },
     about: String,
-    open_hrs: {
-      starting_hour: { type: Number, required: true },
-      closing_hour: { type: Number, required: true },
-    },
+    // open_hrs: {
+    //   starting_hour: { type: Number, required: true },
+    //   closing_hour: { type: Number, required: true },
+    // },
   },
   {
     timestamps: true,
