@@ -1,246 +1,29 @@
 import cv2
-import joblib
-import face_recognition
-import math
-from PIL import Image, ImageDraw
-import pandas as pd
-import numpy as np
+from PIL import Image
+import tensorflow as tf
+from PIL import Image
+import os
 
 
-def distance(p1, p2):
-    dx = p2[0] - p1[0]
-    dy = p2[1] - p1[1]
-    return math.sqrt(dx * dx + dy * dy)
+def hair_style_recommend(image_path):
+    model = tf.keras.models.load_model(
+        'content\MobileNetmodel.h5')
 
+    if (image_path.endswith('JPEG') or image_path.endswith('jpeg') or image_path.endswith('jpg') or image_path.endswith(
+            'PNG') or image_path.endswith('png')):
+        image = Image.open(image_path)
+        image = image.convert('RGB')
+        image_path = image_path.split('.')[0]+'.JPG'
+        image.save(image_path + '.JPG')
 
-def scale_rotate_translate(image, angle, center=None, new_center=None, scale=None, resample=Image.BICUBIC):
-    if (scale is None) and (center is None):
-        return image.rotate(angle=angle, resample=resample)
-    nx, ny = x, y = center
-    sx = sy = 1.0
-    if new_center:
-        (nx, ny) = new_center
-    if scale:
-        (sx, sy) = (scale, scale)
-    cosine = math.cos(angle)
-    sine = math.sin(angle)
-    a = cosine / sx
-    b = sine / sx
-    c = x - nx * a - ny * b
-    d = -sine / sy
-    e = cosine / sy
-    f = y - nx * d - ny * e
-    return image.transform(image.size, Image.AFFINE, (a, b, c, d, e, f), resample=resample)
+    img = cv2.imread(image_path)
+    img.resize(1, 224, 224, 3, refcheck=False)
+    output_precentages = max(model.predict_on_batch([img]))
+    output_label = output_precentages.argmax(axis=0)
+    fsarr = ['heart', 'oblong', 'oval', 'round', 'square']
+    fs = fsarr[output_label]
+    hsloc4 = None
 
-
-def crop_face(image, eye_left=(0, 0), eye_right=(0, 0), offset_pct=(0.3, 0.3), dest_sz=(600, 600)):
-    # calculate offsets in original image
-    offset_h = math.floor(float(offset_pct[0]) * dest_sz[0])
-    offset_v = math.floor(float(offset_pct[1]) * dest_sz[1])
-    # get the direction
-    eye_direction = (eye_right[0] - eye_left[0],
-                     eye_right[1] - eye_left[1])
-    # calc rotation angle in radians
-    rotation = - \
-        math.atan2(float(eye_direction[1]), float(eye_direction[0]))
-    # print(rotation)
-    # distance between them
-    dist = distance(eye_left, eye_right)
-    # calculate the reference eye-width
-    reference = dest_sz[0] - 2.0 * offset_h
-    # scale factor
-    scale = float(dist) / float(reference)
-    # rotate original around the left eye
-
-    image = scale_rotate_translate(image, center=eye_left, angle=rotation)
-    # crop the rotated image
-    crop_xy = (eye_left[0] - scale * offset_h,
-               eye_left[1] - scale * offset_v)
-    crop_size = (dest_sz[0] * scale, dest_sz[1] * scale)
-    image = image.crop(
-        (int(crop_xy[0]), int(crop_xy[1]), int(crop_xy[0] + crop_size[0]), int(crop_xy[1] + crop_size[1])))
-    # resize it
-    image = image.resize(dest_sz, Image.ANTIALIAS)
-    return image
-
-
-def hair_style_recommend(imagepath):
-    model = joblib.load('svmrbfclassifier9.pkl')
-    image_select = imagepath
-    scaler = joblib.load("scaler_final.save")
-    data = pd.DataFrame()
-    data.reset_index
-    # shape_array = []
-
-    # This function looks at one image, draws points and saves points to DF
-    pts = []
-    face = 0
-    image = face_recognition.load_image_file(image_select)
-    face_landmarks_list = face_recognition.face_landmarks(image)
-
-    for face_landmarks in face_landmarks_list:
-        face += 1
-        if face > 1:  # this will only measure one face per image
-            break
-        else:
-            # Print the location of each facial feature in this image
-            facial_features = [
-                'chin',
-                'left_eyebrow',
-                'right_eyebrow',
-                'nose_bridge',
-                'nose_tip',
-                'left_eye',
-                'right_eye',
-                'top_lip',
-                'bottom_lip'
-            ]
-
-            for facial_feature in facial_features:
-                # put each point in a COLUMN
-                for point in face_landmarks[facial_feature]:
-                    for pix in point:
-                        pts.append(pix)
-
-        pil_image = Image.fromarray(image)
-        d = ImageDraw.Draw(pil_image)
-
-        eyes = []
-        lex = pts[72]
-        ley = pts[73]
-        rex = pts[90]
-        rey = pts[91]
-        eyes.append(pts[72:74])
-        eyes.append(pts[90:92])
-
-        image = Image.open(image_select)
-        crop_image = crop_face(image, eye_left=(lex, ley),
-                               eye_right=(rex, rey),
-                               offset_pct=(0.34, 0.34),
-                               dest_sz=(300, 300))
-        try:
-            crop_image.save(str(image_select)[:-4] + "_NEW_cropped.jpg")
-        except:
-            # continue
-            crop_image.show()
-
-        nn = str(image_select)[:-4] + "_NEW_cropped.jpg"
-        pts = []
-        face = 0
-        image = face_recognition.load_image_file(nn)
-        face_landmarks_list = face_recognition.face_landmarks(image)
-
-        for face_landmarks in face_landmarks_list:
-            face += 1
-            if face > 1:  # this will only measure one face per image
-                break
-            else:
-                # Print the location of each facial feature in this image
-                facial_features2 = [
-                    'chin',
-                    'left_eyebrow',
-                    'right_eyebrow',
-                    'nose_bridge',
-                    'nose_tip',
-                    'left_eye',
-                    'right_eye',
-                    'top_lip',
-                    'bottom_lip'
-                ]
-
-                for facial_feature in facial_features2:
-                    # put each point in a COLUMN
-                    for point in face_landmarks[facial_feature]:
-                        for pix in point:
-                            pts.append(pix)
-
-            i = 0
-            for j in range(0, 17):
-                if i != 16:
-                    if i != 17:
-                        px = pts[i]
-                        py = pts[i + 1]
-                        chin_x = pts[16]  # always the chin x
-                        chin_y = pts[17]  # always the chin y
-
-                        x_diff = float(px - chin_x)
-
-                        if (py == chin_y):
-                            y_diff = 0.1
-                        if (py < chin_y):
-                            y_diff = float(np.absolute(py - chin_y))
-                        if (py > chin_y):
-                            y_diff = 0.1
-                            print(
-                                "Error: facial feature is located below the chin.")
-
-                        angle = np.absolute(math.degrees(
-                            math.atan(x_diff / y_diff)))
-
-                        pts.append(angle)
-                i += 2
-
-            pil_image = Image.fromarray(image)
-            d = ImageDraw.Draw(pil_image)
-
-            for facial_feature in facial_features2:
-                # d.line(face_landmarks[facial_feature], width=5)
-                d.point(face_landmarks[facial_feature],
-                        fill=(255, 255, 255))
-
-            # take_measurements width & height measurements
-        msmt = []
-        a = pts[0]  # point 1 x - left side of face
-        b = pts[1]  # point 1 y
-        c = pts[32]  # point 17 x - right side of face
-        d = pts[33]  # point 17 y
-
-        e = pts[16]  # point 9 x - chin
-        f = pts[17]  # point 9 y - chin
-        # Visual inspection indicates that point 29 is the middle of the face,
-        # so the height of the face is 1.4X the height between chin & point 29 which are coordinates 56 and 57
-        g = pts[56]  # point 29's x coordinate (mid-face point)
-        h = pts[57]  # point 29's y coordinate
-
-        i = pts[12]  # point 7 x   for jaw width
-        j = pts[13]  # point 7 y   for jaw width
-        k = pts[20]  # point 11 x  for jaw width
-        l = pts[21]  # point 11 y  for jaw width
-
-        m = pts[8]  # point 5 x   for mid jaw width
-        n = pts[9]  # point 5 y   for mid jaw width
-        o = pts[24]  # point 13 x   for mid jaw width
-        p = pts[25]  # point 13 y   for mid jaw width
-
-        face_width = np.sqrt(np.square(a - c) + np.square(b - d))
-        pts.append(face_width)
-        half_height = np.sqrt(np.square(e - g) + np.square(f - h))
-        face_height = half_height*1.4
-        # double the height to the mid-point
-        pts.append(face_height)
-        height_to_width = face_height / face_width
-
-        pts.append(height_to_width)
-
-        # JAW width (7-11)
-        jaw_width = np.sqrt(np.square(i - k) + np.square(j - l))
-        pts.append(jaw_width)
-        jaw_width_to_face_width = jaw_width / face_width
-        pts.append(jaw_width_to_face_width)
-
-        # mid-JAW width (5-13)
-        mid_jaw_width = np.sqrt(np.square(m - o) + np.square(n - p))
-        pts.append(mid_jaw_width)
-        mid_jaw_width_to_jaw_width = mid_jaw_width / jaw_width
-        pts.append(mid_jaw_width_to_jaw_width)
-        ### end of new ###
-    image_arr = np.array(pts)
-    image_arr = image_arr.reshape(1, 167)
-    # image_arr=normalize(image_arr)
-    # print(image_arr)
-    image_arr = scaler.transform(image_arr)
-    fs = model.predict(image_arr)
-    # print(fs)
     hsa = ['Blunt bob above the shoulder',
            'Shoulder length cut with subtle layers',
            'Side swept bangs',
@@ -258,53 +41,41 @@ def hair_style_recommend(imagepath):
            'Loose curls that start close to the roots',
            'Flat iton waves', 'Salon-style blowout with volume',
            'Long layers that break at the collarbone']
+
     m = 'Recommended Hairstyles: '
-    hsloc4 = None
+
+    first_part = "http://192.168.1.101:5000/"
+
     if(fs == 'oval'):
         hs = m+hsa[0]+" or "+hsa[1]+hsa[2]+" or "+hsa[3]
-        hsloc1 = cv2.imread('content/0.PNG', cv2.IMREAD_UNCHANGED)
-        hsloc2 = cv2.imread('content/1.PNG', cv2.IMREAD_UNCHANGED)
-        hsloc3 = cv2.imread('content/2.PNG', cv2.IMREAD_UNCHANGED)
-        hsloc4 = cv2.imread('content/3.PNG', cv2.IMREAD_UNCHANGED)
-        cv2.imshow('', hsloc1)
-        cv2.imshow('', hsloc2)
-        cv2.imshow('', hsloc3)
-        cv2.imshow('', hsloc4)
+        hsloc1 = first_part + 'content/0.PNG'
+        hsloc2 = first_part + 'content/1.PNG'
+        hsloc3 = first_part + 'content/2.PNG'
+        hsloc4 = first_part + 'content/3.PNG'
+        return [{'link': hsloc1, 'desc': hsa[0]}, {'desc': hsa[1], 'link':hsloc2}, {'desc': hsa[2], 'link':hsloc3}, {'desc': hsa[3], 'link':hsloc4}]
     elif(fs == 'square'):
         hs = m+hsa[4]+" or "+hsa[5]+" or "+hsa[6]
-        hsloc1 = cv2.imread('content/4.PNG', cv2.IMREAD_UNCHANGED)  # Dirs
-        hsloc2 = cv2.imread('content/5.PNG', cv2.IMREAD_UNCHANGED)
-        hsloc3 = cv2.imread('content/6.PNG', cv2.IMREAD_UNCHANGED)
-        cv2.imshow('', hsloc1)
-        cv2.imshow('', hsloc2)
-        cv2.imshow('', hsloc3)
+        hsloc1 = first_part + 'content/4.PNG'
+        hsloc2 = first_part + 'content/5.PNG'
+        hsloc3 = first_part + 'content/6.PNG'
+        return [{'desc': hsa[4], 'link':hsloc1}, {'desc': hsa[5], 'link':hsloc2}, {'desc': hsa[6], 'link':hsloc3}]
     elif(fs == 'round'):
         hs = m+hsa[7]+" or "+hsa[8]+" or "+hsa[9]+" or "+hsa[10]
-        hsloc1 = cv2.imread('content/7.PNG', cv2.IMREAD_UNCHANGED)
-        hsloc2 = cv2.imread('content/8.PNG', cv2.IMREAD_UNCHANGED)
-        hsloc3 = cv2.imread('content/9.PNG', cv2.IMREAD_UNCHANGED)
-        hsloc4 = cv2.imread('content/10.PNG', cv2.IMREAD_UNCHANGED)
-        cv2.imshow('', hsloc1)
-        cv2.imshow('', hsloc2)
-        cv2.imshow('', hsloc3)
-        cv2.imshow('', hsloc4)
+        hsloc1 = first_part + 'content/7.PNG'
+        hsloc2 = first_part + 'content/8.PNG'
+        hsloc3 = first_part + 'content/9.PNG'
+        hsloc4 = first_part + 'content/10.PNG'
+        return [{'desc': hsa[7], 'link':hsloc1}, {'desc': hsa[8], 'link':hsloc2}, {'desc': hsa[9], 'link':hsloc3}, {'desc': hsa[10], 'link':hsloc4}]
     elif(fs == 'heart'):
         hs = m+hsa[11]+" or "+hsa[12]+" or "+hsa[13]
-        hsloc1 = cv2.imread('content/11.PNG', cv2.IMREAD_UNCHANGED)
-        hsloc2 = cv2.imread('content/12.PNG', cv2.IMREAD_UNCHANGED)
-        hsloc3 = cv2.imread('content/13.PNG', cv2.IMREAD_UNCHANGED)
-        cv2.imshow('', hsloc1)
-        cv2.imshow('', hsloc2)
-        cv2.imshow('', hsloc3)
+        hsloc1 = first_part + 'content/11.PNG'
+        hsloc2 = first_part + 'content/12.PNG'
+        hsloc3 = first_part + 'content/13.PNG'
+        return [{'desc': hsa[11], 'link':hsloc1}, {'desc': hsa[12], 'link':hsloc2}, {'desc': hsa[13], 'link':hsloc3}]
     elif(fs == 'oblong'):
         hs = m+hsa[14]+" or "+hsa[15]+" or "+hsa[16]+" or "+hsa[17]
-        hsloc1 = cv2.imread('content/14.PNG', cv2.IMREAD_UNCHANGED)
-        hsloc2 = cv2.imread('content/15.PNG', cv2.IMREAD_UNCHANGED)
-        hsloc3 = cv2.imread('content/16.PNG', cv2.IMREAD_UNCHANGED)
-        hsloc4 = cv2.imread('content/17.PNG', cv2.IMREAD_UNCHANGED)
-        cv2.imshow('', hsloc1)
-        cv2.imshow('', hsloc2)
-        cv2.imshow('', hsloc3)
-        cv2.imshow('', hsloc4)
-    # print(hs)
-    return {"1": hsloc1.tolist(), "2": hsloc2.tolist(), "3": hsloc3.tolist(), "4": hsloc4.tolist()}
+        hsloc1 = first_part + 'content/14.PNG'
+        hsloc2 = first_part + 'content/15.PNG'
+        hsloc3 = first_part + 'content/16.PNG'
+        hsloc4 = first_part + 'content/17.PNG'
+        return [{'desc': hsa[14], 'link':hsloc1}, {'desc': hsa[15], 'link':hsloc2}, {'desc': hsa[16], 'link':hsloc3}, {'desc': hsa[17], 'link':hsloc4}]

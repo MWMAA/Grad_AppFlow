@@ -14,3 +14,5 @@ face-recognition
 dlib 
 pillow
 uwsgi
+flask_cors
+tensorflow
