@@ -1,20 +1,21 @@
 import React from "react";
-import {
-  StyleSheet,
-  View,
-  Text,
-  Dimensions,
-  TouchableHighlight,
-  Image,
-} from "react-native";
+import { StyleSheet, View, Text, Dimensions, Image } from "react-native";
 
-const CameraPreviewComponent = (props: any) => {
+const CameraPreviewComponent = (props: any, navigation: any) => {
   return (
     <View style={styles.container}>
       <View>
         <Image source={{ uri: props.path }} style={styles.preview} />
         <Text style={styles.cancel} onPress={() => props.setPath(null)}>
           Cancel
+        </Text>
+        <Text
+          style={styles.LGTM}
+          onPress={() => {
+            navigation.navigate("Image");
+          }}
+        >
+          AMAZING!
         </Text>
       </View>
     </View>
@@ -37,12 +38,24 @@ const styles = StyleSheet.create({
   },
   cancel: {
     position: "absolute",
-    right: 20,
+    left: 20,
     top: 50,
     color: "#FFF",
     fontWeight: "600",
     fontSize: 17,
     backgroundColor: "#FF0000",
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+  },
+  LGTM: {
+    position: "absolute",
+    right: 20,
+    top: 50,
+    color: "#FFF",
+    fontWeight: "600",
+    fontSize: 17,
+    backgroundColor: "#5FF314",
     paddingVertical: 12,
     paddingHorizontal: 12,
     borderRadius: 10,

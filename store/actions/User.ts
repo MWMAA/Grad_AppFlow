@@ -2,7 +2,7 @@ import axios, { AxiosResponse, Method } from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Dispatch } from "redux";
 
-const Link = "http://192.168.1.103:3000";
+const Link = "http://192.168.1.101:3000";
 
 const axiosRequest = async (
   RequestMethod: Method,
@@ -65,7 +65,7 @@ export const login = (email: string, password: string) => {
       .then(async (res: any) => {
         await AsyncStorage.setItem("Access_Token", res.data.accessToken);
         await AsyncStorage.setItem("Refresh_Token", res.data.refreshToken);
-
+        console.log(res.data);
         dispatch({
           type: "AUTHENTICATE",
           token: res.data.accessToken,

@@ -15,7 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import cameraPreview from "./cameraPreview";
 
-const CameraComponent = () => {
+const CameraComponent = (props) => {
   const cameraRef = useRef();
   const [path, setPath] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.front);
@@ -171,7 +171,9 @@ const CameraComponent = () => {
 
   return (
     <View style={styles.container}>
-      {path ? cameraPreview({ path, setPath }) : renderCamera()}
+      {path
+        ? cameraPreview({ path, setPath }, props.navigation)
+        : renderCamera()}
     </View>
   );
 };

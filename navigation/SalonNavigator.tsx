@@ -17,6 +17,7 @@ import SalonDetailScreen, {
 } from "../screens/salons/SalonDetailScreen";
 import CartScreen from "../screens/CartScreen";
 import SalonFormScreen from "../screens/SalonFormScreen";
+import ImageContainer from "../screens/ImageContainer";
 
 const defaultNavOptions = {
   headerStyle: {
@@ -73,6 +74,24 @@ const tabBarOption = ({ route }: any) => ({
   },
 });
 
+const CameraStackNavigator = createNativeStackNavigator();
+
+const CameraNavigator = () => {
+  return (
+    <CameraStackNavigator.Navigator screenOptions={defaultNavOptions}>
+      <CameraStackNavigator.Screen
+        name="Camera"
+        component={CameraComponent}
+        options={{ headerShown: false }}
+      />
+      <CameraStackNavigator.Screen
+        name="Image"
+        component={ImageContainer}
+      />
+    </CameraStackNavigator.Navigator>
+  );
+};
+
 const SettingsStackNavigator = createNativeStackNavigator();
 
 const SettingsNavigator = () => {
@@ -108,7 +127,7 @@ export const SalonBarNavigator = () => {
       <BottomDrawer.Screen name="Map" component={MapComponent} />
       <BottomDrawer.Screen
         name="Camera"
-        component={CameraComponent}
+        component={CameraNavigator}
         options={{
           tabBarStyle: { display: "none" },
           tabBarShowLabel: false,
