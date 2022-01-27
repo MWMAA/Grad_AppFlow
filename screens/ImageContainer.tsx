@@ -34,15 +34,23 @@ export default class App extends React.Component {
       <View
         style={{
           backgroundColor: "floralwhite",
-          borderRadius: 5,
-          height: 250,
-          padding: 50,
-          marginLeft: 25,
-          marginRight: 25,
+          borderRadius: 8,
+          height: 670,
+          padding: 10,
+          paddingBottom: 50,
+          marginLeft: 5,
+          marginRight: 5,
         }}
       >
         <Image source={{ uri: item.link }} style={styles.ImageContainer} />
-        <Text>{item.desc}</Text>
+        <Text
+          style={{
+            fontWeight: "800",
+            fontSize: 24,
+          }}
+        >
+          {item.desc}
+        </Text>
       </View>
     );
   }
@@ -50,7 +58,7 @@ export default class App extends React.Component {
   render() {
     return (
       <SafeAreaView
-        style={{ flex: 1, backgroundColor: "gray", paddingTop: 50 }}
+        style={{ flex: 1, backgroundColor: "gray", paddingTop: 40 }}
       >
         <View
           style={{ flex: 1, flexDirection: "row", justifyContent: "center" }}
@@ -60,7 +68,7 @@ export default class App extends React.Component {
             ref={(ref) => (this.carousel = ref)}
             data={this.state.carouselItems}
             sliderWidth={200}
-            itemWidth={400}
+            itemWidth={420}
             renderItem={this._renderItem}
             onSnapToItem={(index) => this.setState({ activeIndex: index })}
           />
